@@ -34,17 +34,24 @@
 /* ------------------------------------------------*/
 /* Fonts Start */
 /* ------------------------------------------------*/
-/* Syne font */
-@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400..800&amp;display=swap");
-
-/* ------------------------------------------------*/
-/* Fonts End */
-/* ------------------------------------------------*/
+/* Syne font loaded via <link> in index.html head */
 /* ------------------------------------------------*/
 /* Template Backgrounds Start */
 /* ------------------------------------------------*/
 .image-background {
   background-image: url(../img/backgrounds/1920x1080-main-bg.webp);
+}
+
+@media (max-width: 640px) {
+  .image-background {
+    background-image: url(../img/backgrounds/640x360-main-bg.webp);
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .image-background {
+    background-image: url(../img/backgrounds/1024x576-main-bg.webp);
+  }
 }
 
 /* ------------------------------------------------*/

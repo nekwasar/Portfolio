@@ -1,11 +1,11 @@
 {
-  "name": "CV/Resume Starter Template",
-  "short_name": "CV/Resume",
+  "name": "NekwasaR Portfolio",
+  "short_name": "NekwasaR",
   "icons": [
-    { "src": "/img/favicon/android-icon-192.png", "type": "image/png", "sizes": "192x192" },
-    { "src": "/img/favicon/android-icon-512.png", "type": "image/png", "sizes": "512x512" }
+    { "src": "/img/favicon/android-icon-192.webp", "type": "image/webp", "sizes": "192x192" },
+    { "src": "/img/favicon/android-icon-512.webp", "type": "image/webp", "sizes": "512x512" }
   ],
-  "theme_color": "#efefef",
-  "background_color": "#efefef",
+  "theme_color": "#111111",
+  "background_color": "#111111",
   "display": "standalone"
 }

@@ -1,109 +1,40 @@
-
-// ------------------------------------------------
-// Table of Contents
-// ------------------------------------------------
-//
-//  01. Loader & Loading Animation
-//  02. Bootstrap Scroll Spy Plugin Settings
-//  03. Lenis Scroll Plugin
-//  04. Parallax
-//  05. Scroll Animations
-//  06. Smooth Scrolling
-//  07. Swiper Slider
-//  08. Contact Form
-//  09. Modernizr SVG Fallback
-//  10. Chrome Smooth Scroll
-//  11. Images Moving Ban
-//  12. Detecting Mobile/Desktop
-//  13. PhotoSwipe Gallery Images Replace
-//  14. Color Switch
-//
-// ------------------------------------------------
-// Table of Contents End
-// ------------------------------------------------
-
 (function () {
   "use strict";
 
-  // Check if jQuery is available
-  if (typeof $ === 'undefined') {
-    console.log('jQuery not available - some features disabled');
-    return;
-  }
+  if (typeof $ === 'undefined') { return; }
 
   $(function () {
 
-    // Check if GSAP is available
     if (typeof gsap !== 'undefined') {
       gsap.registerPlugin(ScrollTrigger);
-    } else {
-      console.log('GSAP not available - animations disabled');
     }
 
-    // --------------------------------------------- //
-    // Loader & Loading Animation Start
-    // --------------------------------------------- //
-
-    console.log('=== LOADER DEBUG START ===');
-    console.log('Page loaded, checking loader elements...');
-
-    // Check if loader elements exist
+    // Loader & Loading Animation
     const loader = document.getElementById("loader");
     const loaderContent = document.getElementById("loaderContent");
 
-    console.log('Loader element:', loader);
-    console.log('Loader content element:', loaderContent);
-
-    if (!loader) {
-      console.error('CRITICAL: Loader element not found!');
-      return;
-    }
-
-    if (!loaderContent) {
-      console.error('CRITICAL: Loader content element not found!');
-      return;
-    }
-
-    console.log('Loader elements found, initial classes:', loader.className, loaderContent.className);
+    if (!loader || !loaderContent) { return; }
 
     function hideLoader() {
-      console.log('=== hideLoader() called ===');
-      console.log('Adding fade-out class to loaderContent...');
-
       if (loaderContent) {
         loaderContent.classList.add("fade-out");
-        console.log('fade-out class added, loaderContent classes:', loaderContent.className);
-      } else {
-        console.error('loaderContent not found in hideLoader!');
       }
-
-      console.log('Setting timeout for loaded class...');
       setTimeout(() => {
-        console.log('Timeout fired, adding loaded class to loader...');
         if (loader) {
           loader.classList.add("loaded");
-          console.log('loaded class added, loader classes:', loader.className);
-          console.log('=== LOADER SHOULD BE HIDDEN NOW ===');
-        } else {
-          console.error('loader not found in timeout!');
         }
       }, 300);
     }
 
-    console.log('Setting up 500ms timeout...');
-    // STRICT ENFORCEMENT: Hide loader after exactly 500ms on first page load
-    setTimeout(() => {
-      console.log('=== 500MS TIMEOUT FIRED ===');
-      console.log('Calling hideLoader()...');
+    if (document.readyState === 'complete') {
       hideLoader();
-    }, 500);
+    } else {
+      window.addEventListener('load', hideLoader, { once: true });
+    }
 
-    console.log('=== LOADER DEBUG SETUP COMPLETE ===');
-
-    // Only run GSAP animations if GSAP is available
+    // GSAP animations
     if (typeof gsap !== 'undefined') {
       try {
-        // Only initialize GSAP headline animations when elements exist
         if (document.querySelectorAll('.animate-headline').length > 0) {
           gsap.set(".animate-headline", { y: 50, opacity: 0 });
           ScrollTrigger.batch(".animate-headline", {
@@ -122,50 +53,32 @@
             onLeaveBack: batch => gsap.set(batch, { opacity: 0, y: 50, overwrite: true })
           });
         }
-      } catch (e) {
-        console.log('GSAP headline animations not available');
+      } catch (e) {}
+    }
+
+    // Vanilla ScrollSpy (replaces Bootstrap ScrollSpy)
+    (function() {
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.menu__link');
+      if (sections.length && navLinks.length) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              navLinks.forEach(link => {
+                link.classList.remove('active');
+                const href = link.getAttribute('href');
+                if (href === '#' + entry.target.id) {
+                  link.classList.add('active');
+                }
+              });
+            }
+          });
+        }, { rootMargin: '0px 0px -40%' });
+        sections.forEach(section => observer.observe(section));
       }
-    }
-    // --------------------------------------------- //
-    // Loader & Loading Animation End
-    // --------------------------------------------- //
+    })();
 
-    // --------------------------------------------- //
-    // Bootstrap Scroll Spy Plugin Settings Start
-    // --------------------------------------------- //
-    try {
-      const scrollSpy = new bootstrap.ScrollSpy(document.body, {
-        target: '#menu',
-        smoothScroll: true,
-        rootMargin: '0px 0px -40%',
-      });
-    } catch (e) {
-      console.log('Bootstrap ScrollSpy not available');
-    }
-    // --------------------------------------------- //
-    // Bootstrap Scroll Spy Plugin Settings End
-    // --------------------------------------------- //
-
-    // --------------------------------------------- //
-    // Lenis Scroll Plugin Start
-    // --------------------------------------------- //
-    try {
-      const lenis = new Lenis();
-      function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-      }
-      requestAnimationFrame(raf);
-    } catch (e) {
-      console.log('Lenis scroll plugin not available');
-    }
-    // --------------------------------------------- //
-    // Lenis Scroll Plugin End
-    // --------------------------------------------- //
-
-    // ------------------------------------------------------------------------------ //
-    // Parallax (apply parallax effect to any element with a data-speed attribute) Start
-    // ------------------------------------------------------------------------------ //
+    // Parallax
     if (typeof gsap !== 'undefined') {
       try {
         const parallaxElements = document.querySelectorAll("[data-speed]");
@@ -181,18 +94,10 @@
             }
           });
         }
-      } catch (e) {
-        console.log('GSAP parallax not available');
-      }
+      } catch (e) {}
     }
-    // --------------------------------------------- //
-    // Parallax End
-    // --------------------------------------------- //
 
-    // --------------------------------------------- //
-    // Scroll Animations Start
-    // --------------------------------------------- //
-    // Animation In Up
+    // Scroll Animations
     if (typeof gsap !== 'undefined') {
       try {
         const animateInUp = document.querySelectorAll(".animate-in-up");
@@ -210,9 +115,7 @@
             }
           });
         });
-      } catch (e) {
-        console.log('GSAP animations not available');
-      }
+      } catch (e) {}
     }
 
     // Animation Rotation
@@ -233,13 +136,10 @@
             }
           });
         });
-      } catch (e) {
-        console.log('GSAP rotation animations not available');
-      }
+      } catch (e) {}
     }
 
-    // Animation Cards Stack
-    // Grid 2x
+    // Animation Cards Stack - Grid 2x
     if (typeof gsap !== 'undefined') {
       try {
         if (document.querySelectorAll('.animate-card-2').length > 0) {
@@ -260,9 +160,7 @@
             onLeaveBack: batch => gsap.set(batch, { opacity: 0, y: 100, overwrite: true })
           });
         }
-      } catch (e) {
-        console.log('GSAP card animations not available');
-      }
+      } catch (e) {}
     }
 
     // Grid 3x
@@ -286,9 +184,7 @@
             onLeaveBack: batch => gsap.set(batch, { opacity: 0, y: 50, overwrite: true })
           });
         }
-      } catch (e) {
-        console.log('GSAP card animations not available');
-      }
+      } catch (e) {}
     }
 
     // Grid 5x
@@ -312,9 +208,7 @@
             onLeaveBack: batch => gsap.set(batch, { opacity: 0, y: 50, overwrite: true })
           });
         }
-      } catch (e) {
-        console.log('GSAP card animations not available');
-      }
+      } catch (e) {}
     }
 
     if (typeof gsap !== 'undefined') {
@@ -328,17 +222,10 @@
         if (document.querySelectorAll('.animate-card-5').length > 0) {
           ScrollTrigger.addEventListener("refreshInit", () => gsap.set(".animate-card-5", { y: 0, opacity: 1 }));
         }
-      } catch (e) {
-        console.log('ScrollTrigger not available');
-      }
+      } catch (e) {}
     }
-    // --------------------------------------------- //
-    // Scroll Animations End
-    // --------------------------------------------- //
 
-    // --------------------------------------------- //
-    // Smooth Scrolling Start
-    // --------------------------------------------- //
+    // Smooth Scrolling
     $('a[href*="#"]').not('[href="#"]').not('[href="#0"]').click(function (event) {
       if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
         var target = $(this.hash);
@@ -355,132 +242,16 @@
             } else {
               $target.attr('tabindex', '-1');
               $target.focus();
-            };
+            }
           });
         }
       }
     });
-    // --------------------------------------------- //
-    // Smooth Scrolling End
-    // --------------------------------------------- //
 
-    // --------------------------------------------- //
-    // Swiper Slider Start
-    // --------------------------------------------- //
-    try {
-      // select the swiper container elements by their class names
-      const toolsSlider = document.querySelector('.swiper-tools');
-      const testimonialsSlider = document.querySelector('.swiper-testimonials');
-
-      // Initialize Swiper only when the corresponding container exists
-      if (toolsSlider) {
-        const swiper = new Swiper('.swiper-tools', {
-          spaceBetween: 20,
-          autoplay: {
-            delay: 1500,
-            disableOnInteraction: false,
-          },
-          loop: true,
-          grabCursor: true,
-          loopFillGroupWithBlank: true,
-          breakpoints: {
-            1600: {
-              slidesPerView: 5,
-            },
-            1200: {
-              slidesPerView: 4,
-            },
-            768: {
-              slidesPerView: 3,
-            },
-            576: {
-              slidesPerView: 2,
-            },
-            0: {
-              slidesPerView: 2,
-            }
-          },
-          pagination: {
-            el: '.swiper-pagination',
-            clickable: true
-          },
-        });
-      }
-
-      if (testimonialsSlider) {
-        const swiper = new Swiper('.swiper-testimonials', {
-          slidesPerView: 1,
-          spaceBetween: 20,
-          autoplay: true,
-          speed: 1000,
-          loop: true,
-          loopFillGroupWithBlank: true,
-          navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-          },
-        });
-      }
-    } catch (e) {
-      console.log('Swiper not available');
-    }
-    // --------------------------------------------- //
-    // Swiper Slider End
-    // --------------------------------------------- //
-
-    // --------------------------------------------- //
-    // Contact Form Start
-    // --------------------------------------------- //
-    // REMOVED: Old jQuery contact form handler - now using contact-form.js
-    // The new contact form handler in contact-form.js sends data to the backend API
-    // --------------------------------------------- //
-    // Contact Form End
-    // --------------------------------------------- //
-
-    // --------------------------------------------- //
-    // Modernizr SVG Fallback Start
-    // --------------------------------------------- //
-    try {
-      if (!Modernizr.svg) {
-        $("img[src*='svg']").attr("src", function () {
-          return $(this).attr("src").replace(".svg", ".png");
-        });
-      };
-    } catch (e) {
-      console.log('Modernizr not available');
-    }
-    // --------------------------------------------- //
-    // Modernizr SVG Fallback End
-    // --------------------------------------------- //
-
-    // --------------------------------------------- //
-    // Chrome Smooth Scroll Start
-    // --------------------------------------------- //
-    try {
-      if (typeof $.browserSelector === 'function') {
-        $.browserSelector();
-        if ($("html").hasClass("chrome")) {
-          $.smoothScroll();
-        }
-      }
-    } catch (err) {
-      console.log('Browser selector or smooth scroll not available');
-    };
-    // --------------------------------------------- //
-    // Chrome Smooth Scroll End
-    // --------------------------------------------- //
-
-    // --------------------------------------------- //
-    // Images Moving Ban Start
-    // --------------------------------------------- //
+    // Images Moving Ban
     $("img, a").on("dragstart", function (event) { event.preventDefault(); });
-    // --------------------------------------------- //
-    // Images Moving Ban End
-    // --------------------------------------------- //
 
-    // --------------------------------------------- //
-    // Detecting Mobile/Desktop Start
-    // --------------------------------------------- //
+    // Detecting Mobile/Desktop
     var isMobile = false;
     if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
       $('html').addClass('touch');
@@ -490,29 +261,18 @@
       $('html').addClass('no-touch');
       isMobile = false;
     }
-    //IE, Edge
     var isIE = /MSIE 9/i.test(navigator.userAgent) || /rv:11.0/i.test(navigator.userAgent) || /MSIE 10/i.test(navigator.userAgent) || /Edge\/\d+/.test(navigator.userAgent);
-    // --------------------------------------------- //
-    // Detecting Mobile/Desktop End
-    // --------------------------------------------- //
 
-    // --------------------------------------------- //
-    // PhotoSwipe Gallery Images Replace Start
-    // --------------------------------------------- //
+    // PhotoSwipe Gallery Images Replace
     $('.gallery__link').each(function () {
       $(this)
         .append('<div class="picture"></div>')
         .children('.picture').css({ 'background-image': 'url(' + $(this).attr('data-image') + ')' });
     });
-    // --------------------------------------------- //
-    // PhotoSwipe Gallery Images Replace End
-    // --------------------------------------------- //
 
   });
 
-  // --------------------------------------------- //
-  // Color Switch Start
-  // --------------------------------------------- //
+  // Color Switch
   const themeBtn = document.querySelector('.color-switcher');
 
   function getCurrentTheme() {
@@ -547,13 +307,8 @@
   window.addEventListener('DOMContentLoaded', () => {
     loadTheme(getCurrentTheme());
   });
-  // --------------------------------------------- //
-  // Color Switch End
-  // --------------------------------------------- //
 
-  // --------------------------------------------- //
-  // Share Modal Start
-  // --------------------------------------------- //
+  // Share Modal
   const shareModal = document.getElementById('share-modal');
   const shareTrigger = document.getElementById('share-trigger');
   const shareModalClose = document.getElementById('share-modal-close');
@@ -562,19 +317,18 @@
   function showShareModal() {
     if (shareModal) {
       shareModal.classList.add('show');
-      document.body.style.overflow = 'hidden'; // Prevent background scroll
+      document.body.style.overflow = 'hidden';
     }
   }
 
   function hideShareModal() {
     if (shareModal) {
       shareModal.classList.remove('show');
-      document.body.style.overflow = ''; // Restore scroll
+      document.body.style.overflow = '';
     }
   }
 
   function copyToClipboard(text) {
-    // Try modern clipboard API first
     if (navigator.clipboard && window.isSecureContext) {
       return navigator.clipboard.writeText(text).then(() => {
         return true;
@@ -589,17 +343,13 @@
   function fallbackCopyTextToClipboard(text) {
     const textArea = document.createElement("textarea");
     textArea.value = text;
-
-    // Avoid scrolling to bottom
     textArea.style.top = "0";
     textArea.style.left = "0";
     textArea.style.position = "fixed";
     textArea.style.opacity = "0";
-
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
-
     try {
       const successful = document.execCommand('copy');
       document.body.removeChild(textArea);
@@ -629,23 +379,18 @@
     copyLinkBtn.addEventListener('click', async () => {
       const url = 'https://nekwasar.com';
       const success = await copyToClipboard(url);
-
       if (success) {
-        // Temporarily change button text to show success
         const originalText = copyLinkBtn.innerHTML;
         copyLinkBtn.innerHTML = '<span class="btn-caption">Copied!</span><i class="ph-bold ph-check"></i>';
         copyLinkBtn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
-
         setTimeout(() => {
           copyLinkBtn.innerHTML = originalText;
           copyLinkBtn.style.background = '';
         }, 2000);
       } else {
-        // Show error
         const originalText = copyLinkBtn.innerHTML;
         copyLinkBtn.innerHTML = '<span class="btn-caption">Failed to copy</span><i class="ph-bold ph-x"></i>';
         copyLinkBtn.style.background = 'linear-gradient(135deg, #dc3545, #fd7e14)';
-
         setTimeout(() => {
           copyLinkBtn.innerHTML = originalText;
           copyLinkBtn.style.background = '';
@@ -654,30 +399,19 @@
     });
   }
 
-  // Close modal on Escape key
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && shareModal && shareModal.classList.contains('show')) {
       hideShareModal();
     }
   });
-  // --------------------------------------------- //
-  // Share Modal End
-  // --------------------------------------------- //
 
-})(); // Close the IIFE wrapper
+})();
 
-// --------------------------------------------- //
 // Service Worker Registration
-// --------------------------------------------- //
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Register sw.js using absolute path from root
     navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('SW registered successfully:', registration.scope);
-      })
-      .catch(error => {
-        console.log('SW registration failed:', error);
-      });
+      .then(registration => {})
+      .catch(() => {});
   });
 }

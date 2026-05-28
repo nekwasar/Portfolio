@@ -14,8 +14,6 @@ class ContactFormHandler {
     }
 
     init() {
-        // Production: rely on native HTML5 validation (required fields in HTML)
-        console.debug('[contact-form] initialized, attaching submit handler', this.form);
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
     }
 
@@ -38,10 +36,7 @@ class ContactFormHandler {
 
     async handleSubmit(e) {
         e.preventDefault();
-        console.debug('[contact-form] submit intercepted');
-
         if (!this.form) {
-            console.error('[contact-form] form not found');
             return;
         }
 
@@ -63,8 +58,6 @@ class ContactFormHandler {
             data.phone = phone.toString().trim();
         }
 
-        console.debug('[contact-form] payload', data);
-
         // Basic client-side validation
         if (!this.validateForm(data)) {
             return;
@@ -75,8 +68,6 @@ class ContactFormHandler {
 
         try {
             const apiUrl = `${this.getApiBase()}/api/contacts/`;
-            console.log('[contact-form] sending request to:', apiUrl);
-
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -85,37 +76,24 @@ class ContactFormHandler {
                 body: JSON.stringify(data)
             });
 
-            console.log('[contact-form] response status:', response.status);
-            console.log('[contact-form] response ok:', response.ok);
-
             if (response.ok) {
                 const result = await response.json();
-                console.log('[contact-form] success response:', result);
                 this.showSuccess('Message sent successfully');
                 this.form.reset();
             } else {
-                console.log('[contact-form] error response status:', response.status);
                 try {
                     const error = await response.json();
-                    console.log('[contact-form] error response body:', error);
                     this.showError('There was an error sending your message');
                 } catch (parseError) {
-                    console.log('[contact-form] could not parse error response:', parseError);
                     this.showError('There was an error sending your message');
                 }
             }
         } catch (error) {
-            console.error('[contact-form] network/connection error:', error);
-
-            // Check if it's a network connectivity issue
             if (!navigator.onLine) {
-                console.log('[contact-form] user is offline');
                 this.showError('Connection error. Please check your internet connection and try again.');
             } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                console.log('[contact-form] network request failed');
                 this.showError('Connection error. Please check your internet connection and try again.');
             } else {
-                console.log('[contact-form] unknown error type:', error.name);
                 this.showError('Connection error. Please try again later.');
             }
         } finally {
@@ -134,7 +112,6 @@ class ContactFormHandler {
         if (!data.name || data.name.length < 2) {
             errors.push('Name must be at least 2 characters long');
             isValid = false;
-            console.log('[contact-form] validation failed: name too short', data.name);
         }
 
         // Email validation (required, proper email format)
@@ -142,22 +119,16 @@ class ContactFormHandler {
         if (!data.email) {
             errors.push('Email address is required');
             isValid = false;
-            console.log('[contact-form] validation failed: email missing');
         } else if (!emailRegex.test(data.email)) {
             errors.push('Please enter a valid email address (format: user@domain.com)');
             isValid = false;
-            console.log('[contact-form] validation failed: invalid email format', data.email);
         }
 
         // Message validation (minimum 3 characters, required)
         if (!data.message || data.message.length < 3) {
             errors.push('Message must be at least 3 characters long');
             isValid = false;
-            console.log('[contact-form] validation failed: message too short', data.message);
         }
-
-        // Phone and Company are optional - no validation needed
-        console.log('[contact-form] validation result:', isValid ? 'PASSED' : 'FAILED', { errors: errors.length });
 
         if (!isValid) {
             this.showError(errors.join('<br>'));
@@ -249,7 +220,6 @@ class ContactFormHandler {
         try {
             new ContactFormHandler();
         } catch (e) {
-            console.error('Failed to initialize ContactFormHandler:', e);
         }
     };
     if (document.readyState === 'loading') {

@@ -7,7 +7,7 @@ const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp', '.ic
 // install: Cache core assets (optional, here we focus on runtime caching)
 self.addEventListener('install', (event) => {
     self.skipWaiting();
-    console.log('[SW] Installed');
+
 });
 
 // activate: detailed cleanup of old caches
@@ -17,7 +17,6 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 cacheNames.map((cache) => {
                     if (cache !== CACHE_NAME) {
-                        console.log('[SW] Clearing old cache:', cache);
                         return caches.delete(cache);
                     }
                 })

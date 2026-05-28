@@ -440,23 +440,26 @@
               <div class="col-12 col-xl-8 grid-item about-descr">
 
                 <p class="about-descr__text animate-in-up">
-                  I started coding in 2022 with no mentor, no budget, and access to only the worst AI models. Every project took months because I wasn't just learning to code — I was learning how to make bad AI produce good systems. That forced me to debug, re-architect, and rebuild constantly.
+                  I started coding in 2022 with no mentor, no budget, and access to only the worst AI models. Every project took months because I wasn't just learning to code — I was learning how to make bad AI produce good systems. That forced me to debug, re-architect, and<span class="about-dots" id="aboutDots">...</span><span class="about-more" id="aboutMore"> rebuild constantly.</span>
                 </p>
-                <p class="about-descr__text animate-in-up">
-                  By 2025, I had rebuilt my main product (YoTop10, a top-10 listings platform) 5 times. Not because the code failed, but because my ability to engineer AI output was finally catching up to my vision. Each version got faster, cleaner, closer to what I wanted.
-                </p>
-                <p class="about-descr__text animate-in-up">
-                  <strong>Today, I have four flagship products:</strong>
-                </p>
-                <p class="about-descr__text animate-in-up">
-                  <strong>YoTop10 v6</strong> — rebuilt from scratch on Node, Next.js, MongoDB. Nearly complete. Until it ships, a static v1 rebuild is running to build domain authority.<br>
-                  <strong>Ecosystem</strong> — Portfolio, Blog, and Store all live. A unified digital presence.<br>
-                  <strong>Minitia</strong> — a 25-tool developer suite. First tool (BugSwarm, a bug finder) near completion.<br>
-                  <strong>Moistello</strong> — a rotating savings and credit app on the Stellar blockchain.
-                </p>
-                <p class="about-descr__text animate-in-up">
-                  I run multiple static blogs (tipshub.cc, proptengine.cc, cremy.co, acad.ngentech.co) to build domain authority while the core products reach full production. Not all are on their live servers yet. All have domains. All are deliberate.
-                </p>
+                <div class="about-more-content" id="aboutMoreContent">
+                  <p class="about-descr__text animate-in-up">
+                    By 2025, I had rebuilt my main product (YoTop10, a top-10 listings platform) 5 times. Not because the code failed, but because my ability to engineer AI output was finally catching up to my vision. Each version got faster, cleaner, closer to what I wanted.
+                  </p>
+                  <p class="about-descr__text animate-in-up">
+                    <strong>Today, I have four flagship products:</strong>
+                  </p>
+                  <p class="about-descr__text animate-in-up">
+                    <strong>YoTop10 v6</strong> — rebuilt from scratch on Node, Next.js, MongoDB. Nearly complete. Until it ships, a static v1 rebuild is running to build domain authority.<br>
+                    <strong>Ecosystem</strong> — Portfolio, Blog, and Store all live. A unified digital presence.<br>
+                    <strong>Minitia</strong> — a 25-tool developer suite. First tool (BugSwarm, a bug finder) near completion.<br>
+                    <strong>Moistello</strong> — a rotating savings and credit app on the Stellar blockchain.
+                  </p>
+                  <p class="about-descr__text animate-in-up">
+                    I run multiple static blogs (tipshub.cc, proptengine.cc, cremy.co, acad.ngentech.co) to build domain authority while the core products reach full production. Not all are on their live servers yet. All have domains. All are deliberate.
+                  </p>
+                </div>
+                <span class="about-toggle-link" id="aboutToggleLink">see more</span>
                 <p class="about-descr__text animate-in-up" style="font-weight: 700; color: var(--t-bright);">
                   "can't say i am a software engineer because agentic engineering is beyond just software!"
                 </p>
@@ -805,11 +808,36 @@
   </div>
   <!-- Share Modal End -->
 
+  <style>
+    .about-more-content { display: none; }
+    .about-more { display: none; }
+    .about-toggle-link {
+      cursor: pointer;
+      text-decoration: underline;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+  </style>
+
   <!-- Load Scripts Start -->
   <script defer src="js/vendor/bundle.min.js"></script>
   <script defer src="js/app.js"></script>
   <script defer src="js/contact-form.js"></script>
   <script defer src="js/gallery-init.js"></script>
+  <script>
+    function toggleAbout() {
+      var dots = document.getElementById('aboutDots');
+      var more = document.getElementById('aboutMore');
+      var content = document.getElementById('aboutMoreContent');
+      var link = document.getElementById('aboutToggleLink');
+      var expanded = link.textContent.trim() === 'see less';
+      dots.style.display = expanded ? 'inline' : 'none';
+      more.style.display = expanded ? 'none' : 'inline';
+      content.style.display = expanded ? 'none' : 'block';
+      link.textContent = expanded ? 'see more' : 'see less';
+    }
+    document.getElementById('aboutToggleLink').addEventListener('click', toggleAbout);
+  </script>
   <!-- Load Scripts End -->
 
 </body>
